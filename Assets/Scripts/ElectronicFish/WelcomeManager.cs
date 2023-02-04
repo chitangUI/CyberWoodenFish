@@ -15,7 +15,7 @@ namespace ElectronicFish
 
 		private void Start()
 		{
-			var combo = PlayerPrefs.GetInt("combo");
+			var combo = PlayerPrefs.GetInt("Merit");
 
 			startGameButton.onClick.AddListener(StartGame);
 			startGameButton.onClick.AddListener(delegate { Debug.Log("nmsl"); });

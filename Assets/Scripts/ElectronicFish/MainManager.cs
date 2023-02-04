@@ -1,46 +1,53 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace ElectronicFish
 {
 	public class MainManager : MonoBehaviour
 	{
-		[SerializeField] private Button testAddButton;
-		[SerializeField] private Text meritText;
-		private List<Transform> _transforms;
+		[SerializeField] private Button fishImage;
 		private GameObject _meritText;
-		private Vector3 _targetVector;
 
 		// Start is called before the first frame update
 		private void Awake()
 		{
-			_meritText = meritText.GameObject();
+			fishImage.onClick.AddListener(MeritAdd);
 
-			var position = _meritText.transform.position;
-			position.y += 300;
-			_targetVector = position;
+			// 获取木鱼右上角位置的 Vector3
+			var textTransformPosition = fishImage.transform.position + new Vector3(300, 500, 0);
 
-			testAddButton.onClick.AddListener(MeritAdd);
-		}
 
-		private void Update()
-		{
-			foreach (var i in _transforms)
-			{
-				i.position = Vector3.Lerp(i.position, _targetVector, 0.4f);
-			}
+			// 动态新建文本，字号 200, 内容为 功德+1, 颜色为白色, 上下左右居中对齐，位置为 209,443,0, 字体为Arial
+			// 爱来自 Github Copilot
+			_meritText = new GameObject("MeritText");
+			var text = _meritText.AddComponent<Text>();
+			text.fontSize = 120;
+			text.text = "功德+1";
+			text.color = Color.white;
+			text.transform.position = textTransformPosition;
+			text.alignment = TextAnchor.MiddleCenter;
+			text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+			// 配置 context size filter
+			var contextSizeFilter = _meritText.AddComponent<ContentSizeFitter>();
+			contextSizeFilter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+			contextSizeFilter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+			text.enabled = false;
 		}
 
 		private void MeritAdd()
 		{
-			var newText = Instantiate(_meritText).GetComponent<Text>();
-			newText.enabled = true;
-			_transforms.Add(newText.transform);
+			var canvas = GetComponent<Canvas>();
+			var newText = Instantiate(_meritText, fishImage.transform.position + new Vector3(300, 700, 0),  new Quaternion());
+			newText.transform.SetParent(canvas.transform);
+			newText.GetComponent<Text>().enabled = true;
+
+			newText.transform.DOMoveY(1500, 1f).OnComplete(() =>
+			{
+				Destroy(newText);
+			});
+
+			PlayerPrefs.SetInt("Merit", PlayerPrefs.GetInt("Merit") + 1);
 		}
 	}
 }
