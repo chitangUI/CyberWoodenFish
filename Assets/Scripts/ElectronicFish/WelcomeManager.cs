@@ -13,6 +13,11 @@ namespace ElectronicFish
 		[SerializeField] private Text comboText;
 		[SerializeField] private Button startGameButton;
 
+		private void Awake()
+		{
+			Application.targetFrameRate = -1;
+		}
+
 		private void Start()
 		{
 			var combo = PlayerPrefs.GetInt("Merit");
