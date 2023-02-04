@@ -7,6 +7,9 @@ onBoardingDoNotAskAgain = true
 showPackageIndexes = false
 showStatusBar = false
 scopes = {
+	"last_search.60D47293" = ""
+	"OpenInspectorPreview.60D47293" = "0"
+	"currentGroup.60D47293" = "find"
 }
 providers = {
 	packages = {
