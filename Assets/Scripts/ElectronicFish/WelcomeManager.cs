@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,7 +12,7 @@ namespace ElectronicFish
 
 		private void Awake()
 		{
-			Application.targetFrameRate = -1;
+			Application.targetFrameRate = 114514;
 		}
 
 		private void Start()

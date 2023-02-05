@@ -1,13 +1,23 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 namespace ElectronicFish
 {
 	public class MainManager : MonoBehaviour
 	{
 		[SerializeField] private Button fishImage;
+		[SerializeField] private AudioSource audioSource;
+		[SerializeField] private Text comboText;
 		private GameObject _meritText;
+		private float _lastPressTime;
+		private int _combo;
+		private bool _saveCombo;
+
+		private readonly List<int> _historyCombo = new();
 
 		// Start is called before the first frame update
 		private void Awake()
@@ -35,6 +45,41 @@ namespace ElectronicFish
 			text.enabled = false;
 		}
 
+		private void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.Escape))
+			{
+				SceneManager.LoadScene("WelcomeScene");
+			}
+
+			comboText.text = $"Combo: {_combo}";
+
+			if (_historyCombo.Count == 6) // 最大为6
+			{
+				_historyCombo.Clear();
+				return;
+			}
+
+			var time = Time.time;
+			
+			// 如果连续点击时间间隔大于 1s, 则将目前的 combo 保存到历史记录中
+			if (time - _lastPressTime > 1f)
+			{
+				if (_combo > 0)
+				{
+					_historyCombo.Add(_combo);
+				}
+
+				_combo = 0;
+			}
+
+
+			if (_historyCombo.Count == 6)
+			{
+				Debug.Log("You win!");
+			}
+		}
+
 		private void MeritAdd()
 		{
 			var canvas = GetComponent<Canvas>();
@@ -48,6 +93,12 @@ namespace ElectronicFish
 			});
 
 			PlayerPrefs.SetInt("Merit", PlayerPrefs.GetInt("Merit") + 1);
+
+			_lastPressTime = Time.time;
+
+			audioSource.Play();
+
+			_combo++;
 		}
 	}
 }
