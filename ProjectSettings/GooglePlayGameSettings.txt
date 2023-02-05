@@ -1,2 +1,9 @@
 lastUpgrade=01101
 proj.pluginVersion=0.11.01
+proj.AppId=538744487788
+and.BundleId=org.chitangui.electronicwoodenfish
+proj.classDir=Assets
+proj.ConstantsClassName=GPGSIds
+and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0a%3cresources%3e%0a++%3c%21--app_id--%3e%0a++%3cstring+name%3d%22app_id%22+translatable%3d%22false%22%3e538744487788%3c%2fstring%3e%0a++%3c%21--package_name--%3e%0a++%3cstring+name%3d%22package_name%22+translatable%3d%22false%22%3eorg.chitangui.electronicwoodenfish%3c%2fstring%3e%0a++%3c%21--achievement+%e4%bb%8e0%e5%88%b01--%3e%0a++%3cstring+name%3d%22achievement_01%22+translatable%3d%22false%22%3eCgkI7P6x_dYPEAIQAQ%3c%2fstring%3e%0a++%3c%21--leaderboard+%e6%89%93%e5%87%bb%e6%ac%a1%e6%95%b0--%3e%0a++%3cstring+name%3d%22leaderboard%22+translatable%3d%22false%22%3eCgkI7P6x_dYPEAIQAg%3c%2fstring%3e%0a%3c%2fresources%3e
+and.ClientId=
+android.SetupDone=true

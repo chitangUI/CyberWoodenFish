@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
 
 namespace ElectronicFish
 {
@@ -61,13 +64,16 @@ namespace ElectronicFish
 			}
 
 			var time = Time.time;
-			
+
 			// 如果连续点击时间间隔大于 1s, 则将目前的 combo 保存到历史记录中
 			if (time - _lastPressTime > 1f)
 			{
 				if (_combo > 0)
 				{
 					_historyCombo.Add(_combo);
+					Social.ReportScore(_combo, GPGSIds.leaderboard, (bool success) => {
+						// handle success or failure
+					});
 				}
 
 				_combo = 0;

@@ -10,6 +10,9 @@ scopes = {
 	"last_search.60D47293" = ""
 	"OpenInspectorPreview.60D47293" = "0"
 	"currentGroup.60D47293" = "find"
+	"last_search.2138236A" = ""
+	"OpenInspectorPreview.2138236A" = "0"
+	"currentGroup.2138236A" = "asset"
 }
 providers = {
 	packages = {

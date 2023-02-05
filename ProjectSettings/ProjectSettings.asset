@@ -256,7 +256,7 @@ PlayerSettings:
   useCustomLauncherGradleManifest: 0
   useCustomBaseGradleTemplate: 0
   useCustomGradlePropertiesTemplate: 0
-  useCustomProguardFile: 0
+  useCustomProguardFile: 1
   AndroidTargetArchitectures: 2
   AndroidTargetDevices: 1
   AndroidSplashScreenScale: 0
