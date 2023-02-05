@@ -26,8 +26,9 @@ namespace ElectronicFish
 			startGameButton.onClick.AddListener(StartGame);
 			leaderboardButton.onClick.AddListener(ShowLeaderboard);
 
-
+#if !UNITY_EDITOR
 			PlayGamesPlatform.Activate();
+#endif
 			Social.localUser.Authenticate(ProcessAuthentication);
 		}
 
