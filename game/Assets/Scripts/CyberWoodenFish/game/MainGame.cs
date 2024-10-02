@@ -31,6 +31,8 @@ namespace CyberWoodenFish.game
         private const float Lifetime = 0.5f; // How long the text stays visible
         
         private const float ComboHideDelay = 1f;
+
+        private bool _boost;
         
         private float _lastComboUpdateTime;
         
@@ -40,9 +42,16 @@ namespace CyberWoodenFish.game
             _gongde = PlayerPrefs.GetInt("gongde"); // default 0
             _combo = 0;
             _lastComboUpdateTime = Time.time;
+
+            _boost = PlayerPrefs.GetInt("boost") != 0;
             
             chitang.onClick.AddListener(() =>
             {
+                if (_boost)
+                {
+                    _gongde -= 3;
+                    _combo += 3;
+                }
                 _gongde -= 1;
                 _combo += 1;
                 _lastComboUpdateTime = Time.time;
