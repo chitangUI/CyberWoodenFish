@@ -18,15 +18,13 @@ namespace CyberWoodenFish.game
         
         [SerializeField] private TMP_Text gongdeText;
 
-        [SerializeField] private Button chitang;
-
         [SerializeField] private GameObject subText;
 
         [SerializeField] private AudioSource sb;
+
+        [SerializeField] private Rigidbody chitang;
         
-        [SerializeField] private AudioSource fish;
-        
-        private const float MoveSpeed = 2f; // Speed of the text movement
+        private const float MoveSpeed = 200f; // Speed of the text movement
         
         private const float Lifetime = 0.5f; // How long the text stays visible
         
@@ -44,9 +42,14 @@ namespace CyberWoodenFish.game
             _lastComboUpdateTime = Time.time;
 
             _boost = PlayerPrefs.GetInt("boost") != 0;
+        }
+
+        // Update is called once per frame
+        private void Update()
+        {
             
-            chitang.onClick.AddListener(() =>
-            {
+            if (Input.GetMouseButtonDown(0)) { // 鼠标左键或触摸
+                ApplyForceAtClick();
                 if (_boost)
                 {
                     _gongde -= 3;
@@ -55,15 +58,11 @@ namespace CyberWoodenFish.game
                 _gongde -= 1;
                 _combo += 1;
                 _lastComboUpdateTime = Time.time;
-                var text = Instantiate(subText);
+                var text = Instantiate(subText, subText.transform.position, Quaternion.identity, subText.transform.parent);
                 text.SetActive(true);
                 StartCoroutine(MoveAndDestroyText(text));
-            });
-        }
-
-        // Update is called once per frame
-        private void Update()
-        {
+            }
+            
             // Update gongde text
             if (_gongde.ToString() != GetNumber(gongdeText))
             {
@@ -87,18 +86,25 @@ namespace CyberWoodenFish.game
                 }
             }
         }
-        
+
+        void ApplyForceAtClick() {
+            // 创建从摄像机到鼠标位置的射线
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            
+            if (Physics.Raycast(ray, out hit)) {
+                Rigidbody rb = hit.rigidbody;
+
+                if (rb == null) return;
+                Vector3 forcePoint = Vector3.Lerp(hit.point, rb.worldCenterOfMass, 0.3f);
+                rb.AddForceAtPosition(ray.direction.normalized * 30f, forcePoint, ForceMode.Impulse);
+            }
+        }
+
         private IEnumerator MoveAndDestroyText(GameObject text)
         {
 
-            if (Random.Range(0, 30) >= 5)
-            {
-                sb.Play();
-            }
-            else
-            {
-                fish.Play();
-            }
+            sb.Play();
             
             var rectTransform = text.gameObject.GetComponent<RectTransform>();
             var elapsedTime = 0f;
