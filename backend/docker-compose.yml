@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: muyu-postgres
+    environment:
+      POSTGRES_DB: muyu_db
+      POSTGRES_USER: muyu_user
+      POSTGRES_PASSWORD: muyu_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U muyu_user -d muyu_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - muyu-network
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: muyu-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass redis_password
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis_password", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - muyu-network
+
+  # 电子木鱼后端应用
+  muyu-backend:
+    build: .
+    container_name: muyu-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgres://muyu_user:muyu_password@postgres:5432/muyu_db?sslmode=disable
+      - REDIS_URL=redis://:redis_password@redis:6379/0
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - GOOGLE_CLIENT_ID=your-google-client-id
+      - APPLE_CLIENT_ID=your-apple-client-id
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - muyu-network
+
+  # Nginx 反向代理 (可选)
+  nginx:
+    image: nginx:alpine
+    container_name: muyu-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - muyu-backend
+    restart: unless-stopped
+    networks:
+      - muyu-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  muyu-network:
+    driver: bridge

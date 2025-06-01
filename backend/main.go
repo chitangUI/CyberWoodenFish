@@ -1,11 +1,11 @@
 package main
 
 import (
-	"context"
-	"github.com/chitangUI/electronic-wooden-fish/bootloader"
+	"electronic-muyu-backend/internal/app"
+
+	"go.uber.org/fx"
 )
 
 func main() {
-	app := bootloader.InitApp(context.Background())
-	app.Run()
+	fx.New(app.Module).Run()
 }
