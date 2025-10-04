@@ -1,0 +1,46 @@
+plugins {
+    id 'com.android.library'
+    alias(libs.plugins.kotlin.android)
+}
+
+android {
+    namespace 'com.github.purolfe.shitmodule'
+    compileSdk 36
+
+    defaultConfig {
+        minSdk 24
+
+        lint {
+            targetSdk 36
+        }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+dependencies {
+    implementation libs.geckoview.nightly
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+}
