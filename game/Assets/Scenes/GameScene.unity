@@ -994,7 +994,10 @@ MonoBehaviour:
   gongdeText: {fileID: 1205969152}
   subText: {fileID: 426065207}
   sb: {fileID: 720860172}
-  chitang: {fileID: 1895841957}
+  maxHitDistance: 100
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &1205969150
 GameObject:
   m_ObjectHideFlags: 0
@@ -1352,6 +1355,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b30e98a0b52c4669912604ef9b3534d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1895841962}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b30e98a0b52c4669912604ef9b3534d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1895841963}
   m_SourcePrefab: {fileID: 100100000, guid: 3b30e98a0b52c4669912604ef9b3534d, type: 3}
 --- !u!1 &1895841956 stripped
 GameObject:
@@ -1445,6 +1451,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.9185491, y: 0.150648, z: 1.915978}
   m_Center: {x: 0.0039913654, y: 0.00821767, z: 0.00093543535}
+--- !u!114 &1895841963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1895841956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d59445ab6034c8eb8e0152a5a6e92eb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  anchor: {fileID: 928964154}
+  ropeBody: {fileID: 483360791}
+  localAttachmentPoint: {x: 0, y: 0, z: -0.7}
+  lineWidth: 0.015
+  lineColor: {r: 0.24, g: 0.12, b: 0.04, a: 1}
+  hitImpulse: 30
 --- !u!1 &1910788572
 GameObject:
   m_ObjectHideFlags: 0

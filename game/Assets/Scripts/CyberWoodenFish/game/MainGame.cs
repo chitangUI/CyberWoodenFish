@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace CyberWoodenFish.game
 {
@@ -22,7 +19,9 @@ namespace CyberWoodenFish.game
 
         [SerializeField] private AudioSource sb;
 
-        [SerializeField] private Rigidbody chitang;
+        [SerializeField, Min(0f)] private float maxHitDistance = 100f;
+
+        [SerializeField] private LayerMask hitLayers = ~0;
         
         private const float MoveSpeed = 200f; // Speed of the text movement
         
@@ -33,6 +32,8 @@ namespace CyberWoodenFish.game
         private bool _boost;
         
         private float _lastComboUpdateTime;
+
+        private Camera _gameplayCamera;
         
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
@@ -42,14 +43,15 @@ namespace CyberWoodenFish.game
             _lastComboUpdateTime = Time.time;
 
             _boost = PlayerPrefs.GetInt("boost") != 0;
+            _gameplayCamera = Camera.main;
         }
 
         // Update is called once per frame
         private void Update()
         {
             
-            if (Input.GetMouseButtonDown(0)) { // 鼠标左键或触摸
-                ApplyForceAtClick();
+            if (Input.GetMouseButtonDown(0) && TryHitTarget(Input.mousePosition))
+            {
                 if (_boost)
                 {
                     _gongde -= 3;
@@ -87,18 +89,26 @@ namespace CyberWoodenFish.game
             }
         }
 
-        void ApplyForceAtClick() {
-            // 创建从摄像机到鼠标位置的射线
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            
-            if (Physics.Raycast(ray, out hit)) {
-                Rigidbody rb = hit.rigidbody;
-
-                if (rb == null) return;
-                Vector3 forcePoint = Vector3.Lerp(hit.point, rb.worldCenterOfMass, 0.3f);
-                rb.AddForceAtPosition(ray.direction.normalized * 30f, forcePoint, ForceMode.Impulse);
+        private bool TryHitTarget(Vector3 screenPosition)
+        {
+            if (_gameplayCamera == null)
+            {
+                _gameplayCamera = Camera.main;
             }
+
+            if (_gameplayCamera == null) return false;
+
+            var ray = _gameplayCamera.ScreenPointToRay(screenPosition);
+            if (!Physics.Raycast(ray, out var hit, maxHitDistance, hitLayers, QueryTriggerInteraction.Ignore))
+            {
+                return false;
+            }
+
+            var target = hit.collider.GetComponentInParent<TetheredTarget>();
+            if (target == null) return false;
+
+            target.ApplyHit(hit.point, ray.direction);
+            return true;
         }
 
         private IEnumerator MoveAndDestroyText(GameObject text)

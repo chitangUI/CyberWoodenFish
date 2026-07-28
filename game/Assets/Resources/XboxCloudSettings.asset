@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57be5a73016f24f499e01b42221e5128, type: 3}
+  m_Name: XboxCloudSettings
+  m_EditorClassIdentifier: Unity.Purchasing.Stores.XboxCloudServices::UnityEngine.Purchasing.XboxCloudSettings
+  m_EnablePurchaseValidation: 0
+  m_CloudCodeModuleName: 
+  m_ServiceTicketFunctionName: 
+  m_ValidatePurchaseFunctionName: 

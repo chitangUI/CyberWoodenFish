@@ -17,10 +17,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
 
-        maven {
-            url "https://maven.mozilla.org/maven2/"
-        }
-
         flatDir {
             dirs "${project(':unityLibrary').projectDir}/libs"
         }
