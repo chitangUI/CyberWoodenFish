@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="UnityEditor.U2D.Tooling.Analyzer" elementFormDefault="qualified" targetNamespace="UnityEditor.U2D.Tooling.Analyzer" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="UnityEngine.UIElements.xsd" namespace="UnityEngine.UIElements" />
+  <xs:complexType name="ReportListItemType">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="UnityEngine.UIElements" base="q1:VisualElementType">
+        <xs:choice />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ReportListItem" xmlns:q2="UnityEngine.UIElements" substitutionGroup="q2:VisualElement" type="tns:ReportListItemType" />
+  <xs:complexType name="DataSourceListType">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q3="UnityEngine.UIElements" base="q3:VisualElementType">
+        <xs:choice />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DataSourceList" xmlns:q4="UnityEngine.UIElements" substitutionGroup="q4:VisualElement" type="tns:DataSourceListType" />
+  <xs:complexType name="ReportListViewType">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q5="UnityEngine.UIElements" base="q5:ListViewType">
+        <xs:choice />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ReportListView" xmlns:q6="UnityEngine.UIElements" substitutionGroup="q6:ListView" type="tns:ReportListViewType" />
+</xs:schema>

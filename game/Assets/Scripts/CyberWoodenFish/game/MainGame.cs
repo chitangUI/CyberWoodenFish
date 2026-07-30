@@ -19,6 +19,8 @@ namespace CyberWoodenFish.game
 
         [SerializeField] private AudioSource sb;
 
+        [SerializeField] private ParticleSystem pondParticleSystem;
+
         [SerializeField, Min(0f)] private float maxHitDistance = 100f;
 
         [SerializeField] private LayerMask hitLayers = ~0;
@@ -29,9 +31,11 @@ namespace CyberWoodenFish.game
         
         private const float ComboHideDelay = 1f;
 
-        private bool _boost;
-        
+        private const int EffectPoolSize = 10;
+
         private float _lastComboUpdateTime;
+
+        private readonly PooledClickEffect[] _effectPool = new PooledClickEffect[EffectPoolSize];
 
         private Camera _gameplayCamera;
         
@@ -42,8 +46,8 @@ namespace CyberWoodenFish.game
             _combo = 0;
             _lastComboUpdateTime = Time.time;
 
-            _boost = PlayerPrefs.GetInt("boost") != 0;
             _gameplayCamera = Camera.main;
+            InitializeEffectPool();
         }
 
         // Update is called once per frame
@@ -52,17 +56,11 @@ namespace CyberWoodenFish.game
             
             if (Input.GetMouseButtonDown(0) && TryHitTarget(Input.mousePosition))
             {
-                if (_boost)
-                {
-                    _gongde -= 3;
-                    _combo += 3;
-                }
                 _gongde -= 1;
                 _combo += 1;
                 _lastComboUpdateTime = Time.time;
-                var text = Instantiate(subText, subText.transform.position, Quaternion.identity, subText.transform.parent);
-                text.SetActive(true);
-                StartCoroutine(MoveAndDestroyText(text));
+                sb.Play();
+                TryPlayPooledEffect();
             }
             
             // Update gongde text
@@ -91,13 +89,6 @@ namespace CyberWoodenFish.game
 
         private bool TryHitTarget(Vector3 screenPosition)
         {
-            if (_gameplayCamera == null)
-            {
-                _gameplayCamera = Camera.main;
-            }
-
-            if (_gameplayCamera == null) return false;
-
             var ray = _gameplayCamera.ScreenPointToRay(screenPosition);
             if (!Physics.Raycast(ray, out var hit, maxHitDistance, hitLayers, QueryTriggerInteraction.Ignore))
             {
@@ -111,23 +102,65 @@ namespace CyberWoodenFish.game
             return true;
         }
 
-        private IEnumerator MoveAndDestroyText(GameObject text)
+        private void InitializeEffectPool()
         {
+            for (var i = 0; i < EffectPoolSize; i++)
+            {
+                var text = Instantiate(
+                    subText,
+                    subText.transform.position,
+                    Quaternion.identity,
+                    subText.transform.parent);
+                text.SetActive(false);
 
-            sb.Play();
-            
-            var rectTransform = text.gameObject.GetComponent<RectTransform>();
+                var particles = Instantiate(
+                    pondParticleSystem,
+                    pondParticleSystem.transform.position,
+                    pondParticleSystem.transform.rotation,
+                    pondParticleSystem.transform.parent);
+                var main = particles.main;
+                main.playOnAwake = false;
+                particles.gameObject.SetActive(false);
+
+                _effectPool[i] = new PooledClickEffect(
+                    text,
+                    text.GetComponent<RectTransform>(),
+                    particles);
+            }
+        }
+
+        private void TryPlayPooledEffect()
+        {
+            foreach (var effect in _effectPool)
+            {
+                if (effect.IsInUse) continue;
+
+                effect.IsInUse = true;
+                effect.TextTransform.anchoredPosition = effect.TextStartPosition;
+                effect.Text.SetActive(true);
+                effect.Particles.gameObject.SetActive(true);
+                effect.Particles.Play(true);
+                StartCoroutine(MoveAndReleaseEffect(effect));
+                return;
+            }
+        }
+
+        private IEnumerator MoveAndReleaseEffect(PooledClickEffect effect)
+        {
             var elapsedTime = 0f;
 
             while (elapsedTime < Lifetime)
             {
                 var yOffset = MoveSpeed * Time.deltaTime;
-                rectTransform.anchoredPosition += new Vector2(0, yOffset);
+                effect.TextTransform.anchoredPosition += new Vector2(0, yOffset);
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
 
-            Destroy(text);
+            effect.Particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            effect.Particles.gameObject.SetActive(false);
+            effect.Text.SetActive(false);
+            effect.IsInUse = false;
         }
 
         private static string GetNumber(TMP_Text text)
@@ -138,6 +171,30 @@ namespace CyberWoodenFish.game
         private static void SetNumber(TMP_Text text, string type,int number)
         {
             text.text = $"{type}: {number}";
+        }
+
+        private sealed class PooledClickEffect
+        {
+            public PooledClickEffect(
+                GameObject text,
+                RectTransform textTransform,
+                ParticleSystem particles)
+            {
+                Text = text;
+                TextTransform = textTransform;
+                TextStartPosition = textTransform.anchoredPosition;
+                Particles = particles;
+            }
+
+            public GameObject Text { get; }
+
+            public RectTransform TextTransform { get; }
+
+            public Vector2 TextStartPosition { get; }
+
+            public ParticleSystem Particles { get; }
+
+            public bool IsInUse { get; set; }
         }
     }
 }

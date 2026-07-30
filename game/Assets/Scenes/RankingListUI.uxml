@@ -1,0 +1,18 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scenes/RankingListStyle.uss?fileID=7433441132597879392&amp;guid=524fb693b3e257f46867e45bafffc70e&amp;type=3#RankingListStyle"/>
+    <engine:VisualElement class="ranking-screen">
+            <engine:Label text="池塘排行榜" class="title"/>
+            <engine:ScrollView class="ranking-scrollable" vertical-scroller-visibility="Hidden">
+                <engine:VisualElement class="ranking-list">
+                    <engine:VisualElement class="ranking-item">
+                        <engine:Label text="1. 玩家A - 1000分" class="player-name"/>
+                        <engine:Label text="Max Combo: 114514" class="player-combo"/>
+                    </engine:VisualElement>
+                    <engine:VisualElement class="ranking-item">
+                        <engine:Label text="2. 玩家B - 2000分" class="player-name"/>
+                        <engine:Label text="Max Combo: 124514" class="player-combo"/>
+                    </engine:VisualElement>
+                </engine:VisualElement>
+            </engine:ScrollView>
+        </engine:VisualElement>
+</engine:UXML>

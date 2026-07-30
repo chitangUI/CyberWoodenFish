@@ -12,7 +12,7 @@ namespace CyberWoodenFish.game
         [SerializeField] private Rigidbody ropeBody;
         [SerializeField] private Vector3 localAttachmentPoint = new(0f, 0f, -0.7f);
         [SerializeField, Min(0.001f)] private float lineWidth = 0.015f;
-        [SerializeField] private Color lineColor = new(0.24f, 0.12f, 0.04f, 1f);
+        [SerializeField] private Color lineColor = Color.white;
 
         [Header("Hit")]
         [SerializeField, Min(0f)] private float hitImpulse = 30f;
@@ -118,11 +118,6 @@ namespace CyberWoodenFish.game
             _lineRenderer.textureMode = LineTextureMode.Stretch;
             _lineRenderer.shadowCastingMode = ShadowCastingMode.Off;
             _lineRenderer.receiveShadows = false;
-
-            if (ropeBody != null && ropeBody.TryGetComponent<Renderer>(out var ropeRenderer))
-            {
-                ropeRenderer.enabled = false;
-            }
         }
 
         private void OnDestroy()
